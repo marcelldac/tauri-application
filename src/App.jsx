@@ -1,7 +1,8 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
+import { useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
+
+import reactLogo from "./assets/react.svg";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -9,14 +10,11 @@ function App() {
   const [password, setPassword] = useState("");
 
   async function login() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
     setGreetMsg(await invoke("login", { email, password }));
   }
 
   return (
     <div className="container">
-      <h1>Welcome to Tauri!</h1>
-
       <div className="row">
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo vite" alt="Vite logo" />
@@ -28,9 +26,6 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
       <form
         className="column"
         onSubmit={(e) => {
@@ -50,8 +45,7 @@ function App() {
         />
         <button type="submit">Greet</button>
       </form>
-
-      <p>{greetMsg}</p>
+      <p>{greetMsg}</p>      
     </div>
   );
 }
