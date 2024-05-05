@@ -9,10 +9,6 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function login() {
-    setGreetMsg(await invoke("login", { email, password }));
-  }
-
   const onSubmit = (formEvent) => {
     formEvent.preventDefault();
     const isLogged = login();
@@ -22,6 +18,11 @@ function App() {
       setGreetMsg("Usuário ou senha inválidos!");
     }
   }
+  
+  async function login() {
+    await invoke("login", { email, password });
+  }
+
 
   return (
     <div className="container">
