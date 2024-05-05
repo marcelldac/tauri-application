@@ -2,8 +2,8 @@
 
 #[tauri::command]
 fn login(email: &str, password: &str) -> String {
-	if email == "admin" && password == "admin" {
-		format!("Seja bem vindo ao app, {}! {}", email, password)
+	if email == "marcell" && password == "marcell" {
+		format!("Seja bem vindo ao app, {}!", email)
 	} else {
 		format!("Usuário ou senha inválidos")
 	}
