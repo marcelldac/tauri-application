@@ -13,6 +13,16 @@ function App() {
     setGreetMsg(await invoke("login", { email, password }));
   }
 
+  const onSubmit = (formEvent) => {
+    formEvent.preventDefault();
+    const isLogged = login();
+    if (isLogged) {
+      setGreetMsg("Usuário logado com sucesso!");
+    } else {
+      setGreetMsg("Usuário ou senha inválidos!");
+    }
+  }
+
   return (
     <div className="container">
       <div className="row">
@@ -26,13 +36,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <form
-        className="column"
-        onSubmit={(e) => {
-          e.preventDefault();
-          login();
-        }}
-      >
+      <form className="column" onSubmit={onSubmit}>
         <input
           id="user-email"
           onChange={(e) => setEmail(e.currentTarget.value)}
