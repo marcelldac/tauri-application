@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS managers (
   username TEXT NOT NULL,
   password TEXT NOT NULL,
   email TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS buildings (
@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS buildings (
   password TEXT NOT NULL,
   address TEXT NOT NULL,
   manager_id INTEGER NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
   CONSTRAINT fk_building_manager
     FOREIGN KEY (manager_id)
     REFERENCES managers(id)
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS reports (
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   building_id INTEGER NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
   CONSTRAINT fk_report_building
     FOREIGN KEY (building_id)
     REFERENCES buildings(id)
