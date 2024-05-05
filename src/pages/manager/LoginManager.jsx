@@ -14,10 +14,10 @@ const getManagers = async (setManagers) => {
   setManagers(managers)
 }
 
-const createManager = async (username, password, email) => {
-  const manager = await invoke('create_manager', { username, password, email, now, now })
-  console.log(manager)
-}
+/* const createManager = async (username, password, email) => {
+  const manager = await invoke('create_manager', { username, password, email, createdAt: now, updatedAt: now })
+  return manager
+} */
 
 export default function CreateManager() {
   const navigateTo = useNavigate()
