@@ -1,13 +1,17 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 #[tauri::command]
-fn login(email: &str, password: &str) -> bool {
+fn login(email: &str, password: &str) -> (String, bool) {
 	if email == "marcell" && password == "marcell" {
-		format!("Seja bem vindo ao app, {}!", email);
-		true
+		(
+			format!("Seja bem vindo ao app, {}!", email),
+			true
+		)
 	} else {
-		format!("Usuário ou senha inválidos");
-		false
+		(
+			format!("Usuário ou senha inválidos"),
+			false
+		)
 	}
 }
 
