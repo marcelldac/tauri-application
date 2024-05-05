@@ -1,5 +1,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use serde::{Deserialize, Serialize};
+use sqlx::{postgres::PgPoolOptions, PgPool};
+use tauri::State;
+use tokio::runtime::Runtime;
+
 #[tauri::command]
 fn login(email: &str, password: &str) -> (String, bool) {
 	if email == "marcell" && password == "marcell" {
@@ -24,21 +29,37 @@ async fn establish_connection() -> PgPool {
 			.await.expect("Unable to connect to postgres")
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+struct Record {
+    id: i32,
+    username: String,
+		password: String,
+		email: String,
+		created_at: String,
+		updated_at: String,
+}
+
+struct PgPoolWrapper {
+	pub pool: PgPool,
+}
+
 #[tauri::command]
-async fn get_users(state: State<'_, PgPoolWrapper>) -> Result<Vec<Record>, String> {
-    let rows: Vec<Record> = sqlx::query_as!(Record, r#"SELECT * FROM users"#)
-        .fetch_all(&state.pool)
-        .await
-        .expect("Unable to fetch users");
+async fn get_managers(state: State<'_, PgPoolWrapper>) -> Result<Vec<Record>, String> {
+	let rows: Vec<Record> = sqlx::query_as!(Record, r#"SELECT * FROM managers"#)
+		.fetch_all(&state.pool)
+		.await
+		.expect("Unable to fetch users");
 
-    println!("{:?}", &rows);
+	println!("{:?}", &rows);
 
-    Ok(rows)
+	Ok(rows)
 }
 
 fn main() {
+	let pool: PgPool = Runtime::new().unwrap().block_on(establish_connection());
 	tauri::Builder::default()
-		.invoke_handler(tauri::generate_handler![login])
+		.manage(PgPoolWrapper{pool})
+		.invoke_handler(tauri::generate_handler![login, get_managers])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }
