@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS managers;
+DROP TABLE IF EXISTS buildings;
+DROP TABLE IF EXISTS reports;
