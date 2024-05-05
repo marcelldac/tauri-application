@@ -49,17 +49,24 @@ async fn get_managers(state: State<'_, PgPoolWrapper>) -> Result<Vec<Record>, St
 		.fetch_all(&state.pool)
 		.await
 		.expect("Unable to fetch users");
-
-	println!("{:?}", &rows);
-
 	Ok(rows)
+}
+
+#[tauri::command]
+async fn create_manager(state: State<'_, PgPoolWrapper>, username: &str, password: &str, email: &str, created_at: &str, updated_at: &str) -> Result<String, String> {
+	let rows = sqlx::query_as!(Record, r#"INSERT INTO managers (username, password, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"#, username, password, email, created_at, updated_at)
+		.execute(&state.pool)
+		.await
+		.expect("Unable to insert user");
+
+	Ok(String::from("Created"))
 }
 
 fn main() {
 	let pool: PgPool = Runtime::new().unwrap().block_on(establish_connection());
 	tauri::Builder::default()
 		.manage(PgPoolWrapper{pool})
-		.invoke_handler(tauri::generate_handler![login, get_managers])
+		.invoke_handler(tauri::generate_handler![login, get_managers, create_manager])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }
