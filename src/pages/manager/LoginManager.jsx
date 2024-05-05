@@ -2,6 +2,7 @@ import '../../App.css'
 import { useEffect, useState } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { Link, useNavigate } from 'react-router-dom'
+import { now } from '../../utils/index.js'
 
 const login = async (email, password) => {
   const [message, status] = await invoke('login', { email, password })
@@ -13,8 +14,8 @@ const getManagers = async (setManagers) => {
   setManagers(managers)
 }
 
-const createManager = async (username, password, email, createdAt, updatedAt) => {
-  const manager = await invoke('create_manager', { username, password, email, createdAt, updatedAt })
+const createManager = async (username, password, email) => {
+  const manager = await invoke('create_manager', { username, password, email, now, now })
   console.log(manager)
 }
 
@@ -38,13 +39,11 @@ export default function CreateManager() {
 
   useEffect(() => {
     getManagers(setManagers)
-    createManager(
+    /* createManager(
       'johndoe',
       'johndoe123',
-      'john@mail.com',
-      new Date().toISOString(),
-      new Date().toISOString()
-    )
+      'john@mail.com'
+    ) */
   }, [])
 
   return (
