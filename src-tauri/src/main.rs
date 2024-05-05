@@ -29,8 +29,12 @@ async fn establish_connection() -> PgPool {
 			.await.expect("Unable to connect to postgres")
 }
 
+struct PgPoolWrapper {
+	pub pool: PgPool,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
-struct Record {
+struct Manager {
     id: i32,
     username: String,
 		password: String,
@@ -39,34 +43,56 @@ struct Record {
 		updated_at: String,
 }
 
-struct PgPoolWrapper {
-	pub pool: PgPool,
-}
-
 #[tauri::command]
-async fn get_managers(state: State<'_, PgPoolWrapper>) -> Result<Vec<Record>, String> {
-	let rows: Vec<Record> = sqlx::query_as!(Record, r#"SELECT * FROM managers"#)
+async fn create_manager(state: State<'_, PgPoolWrapper>, username: &str, password: &str, email: &str, created_at: &str, updated_at: &str) -> Result<String, String> {
+	let _rows = sqlx::query_as!(Record, r#"INSERT INTO managers (username, password, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"#, username, password, email, created_at, updated_at)
+	.execute(&state.pool)
+	.await
+	.expect("Unable to insert user");
+Ok(format!("{} manager created successfully", username))
+}
+#[tauri::command]
+async fn get_managers(state: State<'_, PgPoolWrapper>) -> Result<Vec<Manager>, String> {
+	let rows: Vec<Manager> = sqlx::query_as!(Manager, r#"SELECT * FROM managers"#)
 		.fetch_all(&state.pool)
 		.await
 		.expect("Unable to fetch users");
 	Ok(rows)
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+struct Building {
+	id: i32,
+	name: String,
+	address: String,
+	manager_id: Option<i32>,
+	created_at: String,
+	updated_at: String,
+}
+
 #[tauri::command]
-async fn create_manager(state: State<'_, PgPoolWrapper>, username: &str, password: &str, email: &str, created_at: &str, updated_at: &str) -> Result<String, String> {
-	let rows = sqlx::query_as!(Record, r#"INSERT INTO managers (username, password, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"#, username, password, email, created_at, updated_at)
+async fn create_building(state: State<'_, PgPoolWrapper>, name: &str, address: &str, manager_id: i32, created_at: &str, updated_at: &str) -> Result<String, String> {
+	sqlx::query_as!(Building, r#"INSERT INTO buildings (name, address, manager_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"#, name, address, manager_id, created_at, updated_at)
 		.execute(&state.pool)
 		.await
-		.expect("Unable to insert user");
+		.expect("Unable to insert building");
 
-	Ok(String::from("Created"))
+	Ok(String::from("Building created successfully"))
+}
+#[tauri::command]
+async fn get_buildings(state: State<'_, PgPoolWrapper>) -> Result<Vec<Building>, String> {
+	let rows: Vec<Building> = sqlx::query_as!(Building, r#"SELECT * FROM buildings"#)
+		.fetch_all(&state.pool)
+		.await
+		.expect("Unable to fetch users");
+	Ok(rows)
 }
 
 fn main() {
 	let pool: PgPool = Runtime::new().unwrap().block_on(establish_connection());
 	tauri::Builder::default()
 		.manage(PgPoolWrapper{pool})
-		.invoke_handler(tauri::generate_handler![login, get_managers, create_manager])
+		.invoke_handler(tauri::generate_handler![login, get_managers, create_manager, create_building, get_buildings])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }
