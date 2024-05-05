@@ -5,6 +5,8 @@ import App from "./App"
 import { Link, RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import LoginManager from './pages/manager/LoginManager'
+import DashboardManager from './pages/manager/DashboardManager'
+import CreateBuilding from './pages/building/CreateBuilding'
 
 const router = createBrowserRouter([
   {
@@ -17,12 +19,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/manager_dashboard",
-    element: (
-      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <h1>Manager Dashboard</h1>
-        <Link to='/'>Sair</Link>
-      </div>
-    )
+    element: <DashboardManager />
+  },
+  {
+    path: "/create-building",
+    element: <CreateBuilding />
   }
 ])
 
