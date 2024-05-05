@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS managers (
 CREATE TABLE IF NOT EXISTS buildings (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  password TEXT NOT NULL,
   address TEXT NOT NULL,
   manager_id INTEGER NULL,
   created_at TEXT NOT NULL,
