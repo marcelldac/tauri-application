@@ -6,18 +6,18 @@ use tauri::State;
 use tokio::runtime::Runtime;
 
 #[tauri::command]
-fn login(email: &str, password: &str) -> (String, bool) {
-	if email == "marcell" && password == "marcell" {
-		(
-			format!("Seja bem vindo ao app, {}!", email),
-			true
-		)
-	} else {
-		(
-			format!("Usuário ou senha inválidos"),
-			false
-		)
+async fn login(state: State<'_, PgPoolWrapper>, email: &str, password: &str) -> Result<(Vec<Manager>, bool), (String, bool)> {
+	let manager: Vec<Manager> = sqlx::query_as!(Manager, r#"SELECT * FROM managers WHERE email = $1"#, email)
+		.fetch_all(&state.pool)
+		.await
+		.expect("Unable to fetch users");
+	if manager.len() == 0 {
+		return Err((format!("Usuário ou senha inválidos"), false));
 	}
+	if email == manager[0].email && password == manager[0].password {
+		return Ok((manager, true));
+	}
+	Err((format!("Usuário ou senha inválidos"), false))
 }
 
 async fn establish_connection() -> PgPool {
@@ -91,6 +91,7 @@ async fn get_buildings(state: State<'_, PgPoolWrapper>) -> Result<Vec<Building>,
 fn main() {
 	let pool: PgPool = Runtime::new().unwrap().block_on(establish_connection());
 	tauri::Builder::default()
+		.plugin(tauri_plugin_store::Builder::default().build())
 		.manage(PgPoolWrapper{pool})
 		.invoke_handler(tauri::generate_handler![login, get_managers, create_manager, create_building, get_buildings])
 		.run(tauri::generate_context!())
