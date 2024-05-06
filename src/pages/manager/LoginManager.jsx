@@ -41,7 +41,7 @@ export default function CreateManager() {
     const acceptedLogin = status
     setGreetMsg(message)
     if (acceptedLogin) {
-      navigateTo('/manager_dashboard')
+      navigateTo('/')
     }
   }
 
