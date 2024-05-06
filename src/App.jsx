@@ -36,13 +36,14 @@ export default function App () {
       : <Link to='/login_manager'>Logar como Manager</Link>
       }
       <h2>Lista de prédios:</h2>
-      {buildings ? buildings.map((building) => {
-        return (
+      {
+      buildings 
+      ? buildings.map((building) => (
           <div key={building.id}>
             <span>{building.name}</span> | <span>{building.address}</span>
-          </div>
-        )
-      }) : <h1>Nenhum prédio foi encontrado</h1>}
+          </div>))
+      : <h1>Nenhum prédio foi encontrado</h1>
+      }
     </div>
   )
 }
