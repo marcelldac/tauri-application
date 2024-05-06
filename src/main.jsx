@@ -2,10 +2,9 @@ import "./styles.css"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App"
-import { Link, RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import LoginManager from './pages/manager/LoginManager'
-import DashboardManager from './pages/manager/DashboardManager'
 import CreateBuilding from './pages/building/CreateBuilding'
 
 const router = createBrowserRouter([
@@ -18,11 +17,7 @@ const router = createBrowserRouter([
     element: <LoginManager />
   },
   {
-    path: "/manager_dashboard",
-    element: <DashboardManager />
-  },
-  {
-    path: "/create-building",
+    path: "/create_building",
     element: <CreateBuilding />
   }
 ])
