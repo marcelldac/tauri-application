@@ -9,8 +9,6 @@ const login = async (email, password) => {
     const [message, status] = await invoke('login', { email, password })
     store.set('user-logged-email', { value: message[0].email })
     store.set('user-logged-username', { value: message[0].username })
-    const val = await store.get('user-logged-username')
-    console.log(val)
     store.set('user-logged-id', { value: message[0].id })
     await store.save()
     return [message, status]
