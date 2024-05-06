@@ -8,7 +8,7 @@ export default function DashboardManager () {
   useEffect(() => {
     (async () => {
       const { value: username } = await store.get('user-logged-username')
-      if(username){
+      if (username) {
         setLoggedUserName(username)
       }
     })()
