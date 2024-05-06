@@ -48,15 +48,15 @@ async fn create_manager(state: State<'_, PgPoolWrapper>, username: &str, passwor
 	let _rows = sqlx::query_as!(Record, r#"INSERT INTO managers (username, password, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"#, username, password, email, created_at, updated_at)
 	.execute(&state.pool)
 	.await
-	.expect("Unable to insert user");
-Ok(format!("{} manager created successfully", username))
+	.expect("Erro ao criar administrador");
+Ok(format!("{} administrador criado com sucesso", username))
 }
 #[tauri::command]
 async fn get_managers(state: State<'_, PgPoolWrapper>) -> Result<Vec<Manager>, String> {
 	let rows: Vec<Manager> = sqlx::query_as!(Manager, r#"SELECT * FROM managers"#)
 		.fetch_all(&state.pool)
 		.await
-		.expect("Unable to fetch users");
+		.expect("Erro ao buscar administradores");
 	Ok(rows)
 }
 
@@ -75,16 +75,16 @@ async fn create_building(state: State<'_, PgPoolWrapper>, name: &str, address: &
 	sqlx::query_as!(Building, r#"INSERT INTO buildings (name, address, manager_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"#, name, address, manager_id, created_at, updated_at)
 		.execute(&state.pool)
 		.await
-		.expect("Unable to insert building");
+		.expect("Erro ao criar prédio");
 
-	Ok(String::from("Building created successfully"))
+	Ok(String::from("Prédio criado com sucesso"))
 }
 #[tauri::command]
 async fn get_buildings(state: State<'_, PgPoolWrapper>) -> Result<Vec<Building>, String> {
 	let rows: Vec<Building> = sqlx::query_as!(Building, r#"SELECT * FROM buildings"#)
 		.fetch_all(&state.pool)
 		.await
-		.expect("Unable to fetch users");
+		.expect("Erro ao criar prédio");
 	Ok(rows)
 }
 
@@ -95,5 +95,5 @@ fn main() {
 		.manage(PgPoolWrapper{pool})
 		.invoke_handler(tauri::generate_handler![login, get_managers, create_manager, create_building, get_buildings])
 		.run(tauri::generate_context!())
-		.expect("error while running tauri application");
+		.expect("Erro ao executar aplicação");
 }
