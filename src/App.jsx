@@ -25,7 +25,7 @@ export default function App () {
       if (userLoggedId) setUserIsLogged(true)
       setBuildings(buildings)
     })()
-  }, [userIsLogged])
+  }, [])
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
