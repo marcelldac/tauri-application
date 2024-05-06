@@ -29,10 +29,15 @@ export default function App () {
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-      <h1>Dashboard Predios</h1>
+      <h1>Listagem de prédios</h1>
       {
       userIsLogged 
-      ? <button onClick={() => { logout(setUserIsLogged) }}>Sair</button> 
+      ? (
+          <>
+            <button onClick={() => { logout(setUserIsLogged) }}>Sair</button>
+            <Link to='/create_building'>Criar prédio</Link>
+          </>
+        )
       : <Link to='/login_manager'>Logar como Manager</Link>
       }
       <h2>Lista de prédios:</h2>
