@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api'
 import { useState } from 'react'
 import { now } from '../../utils/index.js'
 import { store } from '../../utils/store.js'
+import { Link } from 'react-router-dom'
 
 async function createBuilding ({ name, address, managerId }) {
   const response = await invoke('create_building', { name, address, managerId: Number(managerId), createdAt: now, updatedAt: now })
@@ -30,6 +31,7 @@ export default function CreateBuilding () {
 
   return (
     <div className='container'>
+      <Link to={history.back()}>Voltar</Link>
       <h1>Criar Prédio</h1>
       <form className='column' onSubmit={onSubmit}>
         <input
