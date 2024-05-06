@@ -1,18 +1,29 @@
 import '../../App.css'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { Link, useNavigate } from 'react-router-dom'
-import { now } from '../../utils/index.js'
+import { store } from '../../utils/store'
 
 const login = async (email, password) => {
-  const [message, status] = await invoke('login', { email, password })
-  return [message, status]
+  try {
+    const [message, status] = await invoke('login', { email, password })
+    store.set('user-logged-email', { value: message[0].email })
+    store.set('user-logged-username', { value: message[0].username })
+    const val = await store.get('user-logged-username')
+    console.log(val)
+    store.set('user-logged-id', { value: message[0].id })
+    await store.save()
+    return [message, status]
+  } catch (error) {
+    const [message, status] = error
+    return [message, status]
+  }
 }
 
-const getManagers = async (setManagers) => {
+/* const getManagers = async (setManagers) => {
   const managers = await invoke('get_managers')
   setManagers(managers)
-}
+} */
 
 /* const createManager = async (username, password, email) => {
   const manager = await invoke('create_manager', { username, password, email, createdAt: now, updatedAt: now })
@@ -22,7 +33,6 @@ const getManagers = async (setManagers) => {
 export default function CreateManager() {
   const navigateTo = useNavigate()
   const [greetMsg, setGreetMsg] = useState('')
-  const [managers, setManagers] = useState()
 
   const onSubmit = async (formEvent) => {
     formEvent.preventDefault()
@@ -37,14 +47,10 @@ export default function CreateManager() {
     }
   }
 
-  useEffect(() => {
-    getManagers(setManagers)
-    /* createManager(
-      'johndoe',
-      'johndoe123',
-      'john@mail.com'
-    ) */
-  }, [])
+  /* useEffect(() => {
+      getManagers(setManagers)
+      createManager('johndoe', 'johndoe123', 'john@mail.com')
+  }, []) */
 
   return (
     <div className='container'>
