@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api'
 import { useState } from 'react'
 import { now } from '../../utils/index.js'
+import { store } from '../../utils/store.js'
 
 async function createBuilding ({ name, address, managerId }) {
   const response = await invoke('create_building', { name, address, managerId: Number(managerId), createdAt: now, updatedAt: now })
@@ -13,10 +14,15 @@ export default function CreateBuilding () {
   const onSubmit = async (formEvent) => {
     formEvent.preventDefault()
     const data = formEvent.target.elements
+    const { value: userLoggedId } = await store.get('user-logged-id')
+    if(!userLoggedId) {
+      setMessage('Você precisa estar logado para criar um prédio.')
+      return
+    }
     const building = {
       name: data['name'].value,
       address: data['address'].value,
-      managerId: data['manager_id'].value
+      managerId: userLoggedId
     }
     const response = await createBuilding(building)
     setMessage(response)
@@ -35,11 +41,6 @@ export default function CreateBuilding () {
           id='building-address'
           name='address'
           placeholder='Digite o endereço do prédio...'
-        />
-        <input
-          id='building-manager-id'
-          name='manager_id'
-          placeholder='Digite o seu nome...'
         />
         <button type='submit'>Criar</button>
         {message && <p>{message}</p>}
